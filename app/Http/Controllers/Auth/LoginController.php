@@ -63,7 +63,7 @@ class LoginController extends Controller
     {
         try {
             
-            if (!auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+            if (!auth()->attempt($request->all())) {
                 return response(["msg" => "Invalid Credentials"],Config('constants.STATUS_CODE.UNPROCESSABLE_ENTITY'));
             }
 
