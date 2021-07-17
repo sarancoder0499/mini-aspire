@@ -1,5 +1,6 @@
 <?php
 return [
+        'TOKEN_EXPIRY' => env('OATH_TOKEN_EXPIRE_DAYS'),
         'STATUS_CODE' => [
             'CONTINUE' => 100,
             'SWITCHING_PROTOCOLS' => 101,
@@ -13,6 +14,7 @@ return [
             'PARTIAL_CONTENT' => 206,
             'MULTI_STATUS' => 207,
             'ALREADY_REPORTED' => 208,
+            'REQUEST_VALIDATION' => 222,
             'IM_USED' => 226,
             'MULTIPLE_CHOICES' => 300,
             'MOVED_PERMANENTLY' => 301,

@@ -27,11 +27,14 @@ $ php artisan key:generate
 ```sh
 $ php artisan migrate
 ```
-6. Use the below credentials for Register
+6. Access Swagger
+url = {APP_URL}/api/documentation
+
+7. Use the below credentials for Register
 name = Test
 email = test@aspire.com
 password = secret
 
-7. Use the below credentials for Login
+8. Use the below credentials for Login
 email = test@aspire.com
 password = secret
