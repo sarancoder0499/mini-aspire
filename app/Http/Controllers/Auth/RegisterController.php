@@ -29,6 +29,55 @@ class RegisterController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+     /**
+        * @OA\Post(
+        ** path="/api/register",
+        *   tags={"Authentication"},
+        *   summary="- Register",
+        *   operationId="register",
+        *
+        *   @OA\Parameter(
+        *      name="name",
+        *      in="query",
+        *      required=true,
+        *      @OA\Schema(
+        *           type="string",
+        *      )
+        *   ),
+        *   @OA\Parameter(
+        *      name="email",
+        *      in="query",
+        *      required=true,
+        *      @OA\Schema(
+        *           type="string",
+        *      )
+        *   ),
+        *   @OA\Parameter(
+        *      name="password",
+        *      in="query",
+        *      required=true,
+        *      @OA\Schema(
+        *          type="string"
+        *      )
+        *   ),
+        *   @OA\Response(
+        *      response=200,
+        *      description="Success",
+        *      @OA\MediaType(
+        *           mediaType="application/json",
+        *      )
+        *   ),
+        *   @OA\Response(
+        *    response=222,
+        *    description="Validation Error Messages",
+        *    @OA\JsonContent(
+        *       @OA\Property(property="status", type="string", example="false"),
+        *       @OA\Property(property="result", type="string", example="[]"),
+        *    )
+        *  ),
+        *)
+    **/
+
     public function registerUser(RegisterRequest $request)
     {
         try{

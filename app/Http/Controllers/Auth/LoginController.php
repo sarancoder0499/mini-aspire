@@ -8,6 +8,7 @@ use Exception;
 
 class LoginController extends Controller
 {
+
     /**
      * Attempt login with the credentials.
      *
@@ -17,13 +18,53 @@ class LoginController extends Controller
      * 
      * @return \Illuminate\Http\Response
      */
-
+     
+     /**
+        * @OA\Post(
+        ** path="/api/login",
+        *   tags={"Authentication"},
+        *   summary="- Sign In",
+        *   operationId="login",
+        *
+        *   @OA\Parameter(
+        *      name="email",
+        *      in="query",
+        *      required=true,
+        *      @OA\Schema(
+        *           type="string",
+        *      )
+        *   ),
+        *   @OA\Parameter(
+        *      name="password",
+        *      in="query",
+        *      required=true,
+        *      @OA\Schema(
+        *          type="string"
+        *      )
+        *   ),
+        *   @OA\Response(
+        *      response=200,
+        *      description="Login Successful",
+        *      @OA\MediaType(
+        *           mediaType="application/json",
+        *      )
+        *   ),
+        *   @OA\Response(
+        *    response=222,
+        *    description="Validation Error Messages",
+        *    @OA\JsonContent(
+        *       @OA\Property(property="status", type="string", example="false"),
+        *       @OA\Property(property="result", type="string", example="[]"),
+        *    )
+        *  ),
+        *)
+    **/
     public function loginUser(LoginRequest $request)
     {
         try {
             
             if (!auth()->attempt($request->all())) {
-                return response(["msg" => "Invalid Credentials"],Config('constants.STATUS_CODE.OK'));
+                return response(["msg" => "Invalid Credentials"],Config('constants.STATUS_CODE.UNPROCESSABLE_ENTITY'));
             }
 
             $tokenResult = auth()->user()->createToken('access_token');

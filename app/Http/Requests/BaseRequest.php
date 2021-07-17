@@ -25,6 +25,6 @@ class BaseRequest extends FormRequest
                 'messages' => $validator->errors(),
             ],
 
-        ),Config('constants.STATUS_CODE.UNPROCESSABLE_ENTITY'));
+        ),Config('constants.STATUS_CODE.REQUEST_VALIDATION'));
     }
 }
