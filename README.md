@@ -27,14 +27,30 @@ $ php artisan key:generate
 ```sh
 $ php artisan migrate
 ```
-6. Access Swagger
+6. Generate API Documentation
+```
+php artisan l5-swagger:generate
+```
+7. Access Swagger
+```
 url = {APP_URL}/api/documentation
-
-7. Use the below credentials for Register
+```
+8. Use the below credentials for Register
+```
 name = Test
 email = test@aspire.com
 password = secret
+```
+9. Run artisan command to get Client ID and Client Secret
+```
+php artisan passport:install
+```
+Copy Password grant Client ID and Client Secret and store in secure place.
 
-8. Use the below credentials for Login
-email = test@aspire.com
+10. Click Authorize button and feed given below inputs
+```
+username = test@aspire.com
 password = secret
+Client ID = We copied from the previous step
+Client Secret = We copied from the previous step
+```
