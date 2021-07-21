@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Service;
 
 use App\Models\Payment;
@@ -14,34 +16,34 @@ class PaymentService
     }
 
     /**
-     * return all Payments for Loan
+     * Return all Payments for Loan
      *
-     * @method store
+     * @method all
      *
-     * @param array
+     * @param array $request
      *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Payment]
+     * @return App\Models\Payment
      *
      */
 
-    public function all(array $request): object
+    public function all(array $request): ?Payment
     {
         $loanId = $request['loan'];
         return $this->payment->whereLoanId($loanId)->get();
     }
 
     /**
-     * return stored Payment object
+     * Return emi amount
      *
      * @method store
      *
-     * @param array
+     * @param object $loan
      *
-     * @return integer
+     * @return float
      *
      */
 
-    public function store(object $loan): int
+    public function store(object $loan): ?float
     {
         $loanId = $loan->id;
         $amount = $loan->amount;
@@ -51,8 +53,7 @@ class PaymentService
         $days = 7;
         $data = [];
 
-        for ($i = 0; $i < $term; $i++)
-        {
+        for ($i = 0; $i < $term; $i++) {
             $payment = ($i === $term - 1) ? $amount : $payment;
             $dueAt = now()->addDays($days);
 
@@ -67,17 +68,16 @@ class PaymentService
             $amount = $amount - $payment;
             $days = $days + 7;
         }
-
         $this->payment->insert($data);
         return $emi;
     }
 
     /**
-     * return paid status
+     * Return re-pay paid status
      *
      * @method pay
      *
-     * @param array
+     * @param object $loan
      *
      * @return bool
      *

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Service\LoanService;
 use App\Http\Service\PaymentService;
 use App\Http\Requests\Payment\PayRequest;
@@ -24,10 +27,10 @@ class PaymentController extends Controller
      * Re-Pay amount against loan
      *
      * @method show
-     * 
+     *
      * @param PayRequest Request
-     * 
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
 
      /**
@@ -54,7 +57,7 @@ class PaymentController extends Controller
         *      description="Success",
         *      @OA\MediaType(
         *           mediaType="application/json",
-        *      )
+        *     )
         *   ),
         *   @OA\Response(
         *    response=222,
@@ -66,31 +69,28 @@ class PaymentController extends Controller
         *  ),
         *)
     **/
-    public function pay(PayRequest $request)
+    public function pay(PayRequest $request): JsonResponse
     {
-        try{
+        try {
             DB::beginTransaction();
 
             // Fetch Record to confirm
             $loan = $this->loanService->get($request->all());
-            
-            if(!isset($loan))
-            {
-                return $this->sendSuccessResponse("No record found");   
+
+            if (!isset($loan)) {
+                return $this->sendSuccessResponse("No record found");
             }
 
             $data = [ "data" => $loan ];
 
             // Check for Approval Status and revert
-            if(!$loan->is_approved)
-            {
-                return $this->sendSuccessResponse("Loan not approved to repay",$data);
+            if (!$loan->is_approved) {
+                return $this->sendSuccessResponse("Loan not approved to repay", $data);
             }
 
             // Check for Loan already paid status
-            if($loan->is_paid)
-            {
-                return $this->sendSuccessResponse("Loan already paid",$data);
+            if ($loan->is_paid) {
+                return $this->sendSuccessResponse("Loan already paid", $data);
             }
 
             // Pay one EMI
@@ -100,13 +100,10 @@ class PaymentController extends Controller
             $this->loanService->update($loan);
 
             DB::commit();
-            return $this->sendSuccessResponse("Payment Successful",$data);
-
-        }catch(Exception $e)
-        {
+            return $this->sendSuccessResponse("Payment Successful", $data);
+        } catch (Exception $e) {
             DB::rollback();
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
-
 }

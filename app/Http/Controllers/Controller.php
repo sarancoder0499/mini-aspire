@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-
 
 /**
  * @OA\Info(
@@ -16,19 +18,41 @@ use Illuminate\Routing\Controller as BaseController;
  */
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
-    public function sendErrorResponse($code,$msg)
+    /**
+     * Send Error Response
+     *
+     * @method sendErrorResponse
+     *
+     * @param string $code, $msg
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendErrorResponse(string $code, string $msg): JsonResponse
     {
-        $code = Config('constants.STATUS_CODE.'.$code);
+        $code = Config('constants.STATUS_CODE.' . $code);
         return response()->json([
             "status" => false,
             "code" => $code,
             "message" => $msg,
-        ],$code);
+        ], $code);
     }
 
-    public function sendSuccessResponse($msg,$data = [])
+    /**
+     * Send Success Response
+     *
+     * @method sendSuccessResponse
+     *
+     * @param string $msg
+     *
+     * @param array $data
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendSuccessResponse(string $msg, array $data = []): JsonResponse
     {
         $code = Config('constants.STATUS_CODE.OK');
         $output = [
@@ -36,14 +60,11 @@ class Controller extends BaseController
             "code" => $code,
             "message" => $msg,
         ];
-        if(count($data) > 0 )
-        {
-            foreach($data as $key => $value)
-            {
+        if (count($data) > 0) {
+            foreach ($data as $key => $value) {
                 $output[$key] = $value;
             }
         }
-        
-        return response()->json($output,$code);
+        return response()->json($output, $code);
     }
 }

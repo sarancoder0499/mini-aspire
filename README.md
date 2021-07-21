@@ -54,7 +54,6 @@ password = secret
 Client ID = We copied from the previous step
 Client Secret = We copied from the previous step
 ```
-
 11. Create database (aspire_testing) and change the DB details in .env.testing file
 ```
 DB_CONNECTION=mysql
@@ -64,9 +63,15 @@ DB_DATABASE=aspire_testing
 DB_USERNAME=your_db_username
 DB_PASSWORD=your_db_password
 ```
-
 12. Run PHPUnit Testing
-
 ```
 vendor/bin/phpunit
+```
+13. Coding Standard as per PHP Code Sniffer, run this code in root folder
+```
+vendor/bin/phpcs --standard=PSR12 app
+```
+14. Coding scan completed as per PHP Stan, run this code in root folder ( Known issues 6 )
+```
+vendor/bin/phpstan analyse app
 ```

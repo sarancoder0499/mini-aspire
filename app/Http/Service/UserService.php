@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Service;
 
 use App\Models\User;
@@ -14,16 +16,16 @@ class UserService
     }
 
     /**
-     * return registered user object
+     * Return newly registered user object
      *
      * @method store
      *
      * @param array
      *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\User]
+     * @return App\Models\User
      *
      */
-    public function store(array $user): object
+    public function store(array $user): ?User
     {
         return $this->user->create($user);
     }

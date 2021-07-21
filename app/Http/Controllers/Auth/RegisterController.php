@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Service\UserService;
 use Illuminate\Support\Str;
 use Exception;
-
 
 class RegisterController extends Controller
 {
@@ -18,17 +20,15 @@ class RegisterController extends Controller
     {
         $this->service = $service;
     }
-   
     /**
      * Register new User
      *
      * @method registerUser
-     * 
+     *
      * @param RegisterRequest Request
-     * 
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-
      /**
         * @OA\Post(
         ** path="/api/register",
@@ -78,13 +78,12 @@ class RegisterController extends Controller
         *)
     **/
 
-    public function registerUser(RegisterRequest $request)
+    public function registerUser(RegisterRequest $request): JsonResponse
     {
-        try{
-            
+        try {
             $request['password'] = bcrypt($request['password']);
             $request['remember_token'] = Str::random(10);
-            
+
             $user = $this->service->store($request->all());
 
             $tokenResult = $user->createToken('access_token');
@@ -92,13 +91,11 @@ class RegisterController extends Controller
             $token = $tokenResult->token;
             $token->expires_at = now()->addDays(config('constants.TOKEN_EXPIRY'));
             $token->save();
-        
-            $data = [ "user" => auth()->user(), "token" => $accessToken ];
-            return $this->sendSuccessResponse("Registration Success",$data);
 
-        }catch(Exception $e)
-        {
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            $data = [ "user" => auth()->user(), "token" => $accessToken ];
+            return $this->sendSuccessResponse("Registration Success", $data);
+        } catch (Exception $e) {
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 }
