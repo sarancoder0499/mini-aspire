@@ -54,3 +54,19 @@ password = secret
 Client ID = We copied from the previous step
 Client Secret = We copied from the previous step
 ```
+
+11. Create database (aspire_testing) and change the DB details in .env.testing file
+```
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=aspire_testing
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password
+```
+
+12. Run PHPUnit Testing
+
+```
+vendor/bin/phpunit
+```

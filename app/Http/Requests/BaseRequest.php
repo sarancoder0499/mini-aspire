@@ -12,7 +12,7 @@ class BaseRequest extends FormRequest
     * Handle a failed validation attempt.
     *
     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-    * 
+    *
     * @return void
     *
     * @throws HttpResponseException;
@@ -22,9 +22,10 @@ class BaseRequest extends FormRequest
         throw new HttpResponseException(response()->json(
             [
                 'status' => false,
+                'code' => Config('constants.STATUS_CODE.REQUEST_VALIDATION'),
                 'messages' => $validator->errors(),
             ],
-
-        ),Config('constants.STATUS_CODE.REQUEST_VALIDATION'));
+            Config('constants.STATUS_CODE.REQUEST_VALIDATION')
+        ));
     }
 }

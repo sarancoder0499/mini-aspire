@@ -93,20 +93,12 @@ class RegisterController extends Controller
             $token->expires_at = now()->addDays(config('constants.TOKEN_EXPIRY'));
             $token->save();
         
-            return response()->json([
-                'status'=>true,
-                'msg'=>'Registration Success',
-                'token' => $accessToken,
-                'user'=> $user
-            ],Config('constants.STATUS_CODE.OK'));
+            $data = [ "user" => auth()->user(), "token" => $accessToken ];
+            return $this->sendSuccessResponse("Registration Success",$data);
 
         }catch(Exception $e)
         {
-            return response()->json([
-                'status' => false,
-                'msg' => $e->getMessage(),
-            ],Config('constants.STATUS_CODE.INTERNAL_SERVER_ERROR'));
-
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
         }
     }
 }
