@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Service;
 
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Loan;
 
 class LoanService
@@ -20,11 +21,11 @@ class LoanService
      *
      * @method all
      *
-     * @return App\Models\Loan
+     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
      *
      */
 
-    public function all(): ?Loan
+    public function all(): ?Collection
     {
         return $this->loan->all();
     }
