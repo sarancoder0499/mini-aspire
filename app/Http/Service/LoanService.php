@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Service;
 
 use App\Models\Loan;
@@ -14,33 +16,31 @@ class LoanService
     }
 
     /**
-     * return all loans
+     * Return all loans
      *
-     * @method store
+     * @method all
      *
-     * @param array
-     *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     * @return App\Models\Loan
      *
      */
 
-    public function all(): ?object
+    public function all(): ?Loan
     {
         return $this->loan->all();
     }
 
     /**
-     * return stored loan object
+     * Create new loan and return it
      *
      * @method store
      *
-     * @param array
+     * @param array $request
      *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     * @return App\Models\Loan
      *
      */
 
-    public function store(array $request): object
+    public function store(array $request): ?Loan
     {
         $amount = $request['amount'];
         $term = $request['term'];
@@ -56,46 +56,46 @@ class LoanService
     }
 
     /**
-     * fetch loan record based on id
+     * Fetch loan record based on id
      *
-     * @method store
+     * @method get
      *
-     * @param array
+     * @param array $request
      *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     * @return App\Models\Loan
      *
      */
 
-    public function get(array $request): ?object
+    public function get(array $request): ?Loan
     {
         $loanId = $request['loan'];
         return $this->loan->whereId($loanId)->with('payments')->first();
     }
 
      /**
-     * approve pending loan
+     * Approve pending loan
      *
      * @method approve
      *
-     * @param array
+     * @param array $loan
      *
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     * @return App\Models\Loan
      *
      */
 
-    public function approve($loan): object
+    public function approve($loan): ?Loan
     {
         $loan->is_approved = 1;
         $loan->save();
-        return $this;
+        return $loan;
     }
 
     /**
-     * update loan status
+     * Update loan status
      *
      * @method update
      *
-     * @param array
+     * @param object $loan
      *
      * @return bool
      *

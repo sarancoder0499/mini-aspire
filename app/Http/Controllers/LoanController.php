@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Loan\StoreRequest;
 use App\Http\Requests\Loan\ShowRequest;
 use App\Http\Requests\Loan\ApproveRequest;
@@ -21,14 +24,13 @@ class LoanController extends Controller
         $this->service = $service;
         $this->paymentService = $paymentService;
     }
-
     /**
      * Fetch All Loans
      *
      * @method index
-     * 
-     * 
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     *
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
      /**
         * @OA\Post(
@@ -50,19 +52,16 @@ class LoanController extends Controller
         *   ),
         *)
     **/
-    public function index()
+    public function index(): JsonResponse
     {
-        try{
-            
+        try {
             $data = $this->service->all();
             $msg = (count($data) > 0) ? "Record's Found" : "No records found";
-            
-            $data = [ "data" => $data ];
-            return $this->sendSuccessResponse($msg,$data);
 
-        }catch(Exception $e)
-        {
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            $data = [ "data" => $data ];
+            return $this->sendSuccessResponse($msg, $data);
+        } catch (Exception $e) {
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 
@@ -70,10 +69,10 @@ class LoanController extends Controller
      * Register new Loan
      *
      * @method store
-     * 
+     *
      * @param StoreRequest Request
-     * 
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
 
      /**
@@ -120,21 +119,20 @@ class LoanController extends Controller
         *  ),
         *)
     **/
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        try{
+        try {
             DB::beginTransaction();
-            
+
             // check basic criteria
             $amount = $request["amount"];
             $term = $request["term"];
-            
+
             $emi = round($amount / $term);
             $total = $term * $emi;
-            
-            if($amount < $total)
-            {
-                return $this->sendErrorResponse("OK","Loan Invalid");
+
+            if ($amount < $total) {
+                return $this->sendErrorResponse("OK", "Loan Invalid");
             }
 
             // create new loan record
@@ -150,12 +148,10 @@ class LoanController extends Controller
             DB::commit();
 
             $data = [ "data" => $loan ];
-            return $this->sendSuccessResponse("Loan Created Successfully",$data);
-
-        }catch(Exception $e)
-        {
+            return $this->sendSuccessResponse("Loan Created Successfully", $data);
+        } catch (Exception $e) {
             DB::rollback();
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 
@@ -164,10 +160,10 @@ class LoanController extends Controller
      * Fetch Single Loan based on Loan Id
      *
      * @method show
-     * 
+     *
      * @param ShowRequest Request
-     * 
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
 
      /**
@@ -206,19 +202,16 @@ class LoanController extends Controller
         *  ),
         *)
     **/
-    public function show(ShowRequest $request)
+    public function show(ShowRequest $request): JsonResponse
     {
-        try{
-
+        try {
             $data = $this->service->get($request->all());
             $msg = (isset($data)) ? "Record's Found" : "No records found";
 
             $data = [ "data" => $data ];
-            return $this->sendSuccessResponse($msg,$data);
-
-        }catch(Exception $e)
-        {
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            return $this->sendSuccessResponse($msg, $data);
+        } catch (Exception $e) {
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 
@@ -226,10 +219,10 @@ class LoanController extends Controller
      * Approve Pending Loan
      *
      * @method show
-     * 
+     *
      * @param ShowRequest Request
-     * 
-     * @return Illuminate\Database\Eloquent\Collection  [\App\Models\Loan]
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
 
      /**
@@ -268,32 +261,27 @@ class LoanController extends Controller
         *  ),
         *)
     **/
-    public function approve(ApproveRequest $request)
+    public function approve(ApproveRequest $request): JsonResponse
     {
-        try{
+        try {
             // Fetch Record to confirm
             $loan = $this->service->get($request->all());
-            
-            if(!isset($loan))
-            {
+
+            if (!isset($loan)) {
                 return $this->sendSuccessResponse("No record found");
             }
             // Check for Approval Status and revert
-            if($loan->is_approved)
-            {
+            if ($loan->is_approved) {
                 $data = [ "data" => $loan ];
-                return $this->sendSuccessResponse("Loan approved already",$data);   
+                return $this->sendSuccessResponse("Loan approved already", $data);
             }
-
             // Approve Loan
-            $this->service->approve($loan); 
+            $this->service->approve($loan);
 
             $data = [ "data" => $loan ];
-            return $this->sendSuccessResponse("Loan approved",$data);
-
-        }catch(Exception $e)
-        {
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            return $this->sendSuccessResponse("Loan approved", $data);
+        } catch (Exception $e) {
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 }

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Exception;
@@ -13,12 +16,11 @@ class LoginController extends Controller
      * Attempt login with the credentials.
      *
      * @method loginUser
-     * 
+     *
      * @param LoginRequest Request
-     * 
-     * @return \Illuminate\Http\Response
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-     
      /**
         * @OA\Post(
         ** path="/api/login",
@@ -59,14 +61,12 @@ class LoginController extends Controller
         *  ),
         *)
     **/
-    public function loginUser(LoginRequest $request)
+    public function loginUser(LoginRequest $request): JsonResponse
     {
         try {
-            
             if (!auth()->attempt($request->all())) {
-                return $this->sendErrorResponse('UNPROCESSABLE_ENTITY',"Invalid Credentials");
+                return $this->sendErrorResponse('UNPROCESSABLE_ENTITY', "Invalid Credentials");
             }
-
             $tokenResult = auth()->user()->createToken('access_token');
             $accessToken = $tokenResult->accessToken;
             $token = $tokenResult->token;
@@ -74,11 +74,9 @@ class LoginController extends Controller
             $token->save();
 
             $data = [ "user" => auth()->user(), "token" => $accessToken ];
-            return $this->sendSuccessResponse("Login Successful",$data);
-
-        }catch(Exception $e)
-        {
-            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
+            return $this->sendSuccessResponse("Login Successful", $data);
+        } catch (Exception $e) {
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR', $e->getMessage());
         }
     }
 }

@@ -42,10 +42,11 @@ class LoanApproveTest extends TestCase
     {
         $this->register();
         $login = $this->login();
-
+        
         $code = Config('constants.STATUS_CODE.OK');
 
         $loan = $this->createLoan($login);
+        
         $data = [
             "loan" => $loan["data"]["id"],
         ];
