@@ -53,7 +53,6 @@ class PaymentService
 
         for ($i = 0; $i < $term; $i++)
         {
-            //$payment = ($amount - $payment) > 0 ? $payment : $amount;
             $payment = ($i === $term - 1) ? $amount : $payment;
             $dueAt = now()->addDays($days);
 
