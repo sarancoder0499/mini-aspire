@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Loan;
 
 use App\Http\Requests\BaseRequest;
 
-class LoginRequest extends BaseRequest
+class StoreRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class LoginRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|string',
-            'password' => 'required|string'
+            'amount' => 'required|numeric|gt:0',
+            'term' => 'required|numeric|gt:0',
         ];
     }
 }

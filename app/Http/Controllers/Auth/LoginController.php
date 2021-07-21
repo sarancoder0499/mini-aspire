@@ -64,7 +64,7 @@ class LoginController extends Controller
         try {
             
             if (!auth()->attempt($request->all())) {
-                return response(["msg" => "Invalid Credentials"],Config('constants.STATUS_CODE.UNPROCESSABLE_ENTITY'));
+                return $this->sendErrorResponse('UNPROCESSABLE_ENTITY',"Invalid Credentials");
             }
 
             $tokenResult = auth()->user()->createToken('access_token');
@@ -73,19 +73,12 @@ class LoginController extends Controller
             $token->expires_at = now()->addDays(config('constants.TOKEN_EXPIRY'));
             $token->save();
 
-            return response()->json([
-                'status'=>true,
-                'msg'=>'Login Successful',
-                'user'=>auth()->user(),
-                'token' => $accessToken,
-            ],Config('constants.STATUS_CODE.OK'));
+            $data = [ "user" => auth()->user(), "token" => $accessToken ];
+            return $this->sendSuccessResponse("Login Successful",$data);
 
         }catch(Exception $e)
         {
-            return response()->json([
-                'status' => false,
-                'msg' => $e->getMessage(),
-            ],Config('constants.STATUS_CODE.INTERNAL_SERVER_ERROR'));
+            return $this->sendErrorResponse('INTERNAL_SERVER_ERROR',$e->getMessage());
         }
     }
 }
